@@ -2,23 +2,41 @@ module RailsResources
   module Filterable
     extend ActiveSupport::Concern
 
-    included do
-      # Filter types
-      TYPE_BOOLEAN = 'boolean'
-      TYPE_DATE = 'date'
-      TYPE_RELATIONSHIP = 'relationship'
-      TYPE_STRING = 'string'
-      TYPE_TEXT = 'text'
+    # Filter types
+    TYPE_BOOLEAN = 'boolean'
+    TYPE_DATE = 'date'
+    TYPE_RELATIONSHIP = 'relationship'
+    TYPE_STRING = 'string'
+    TYPE_TEXT = 'text'
 
-      # Filter operators
-      OPERATOR_EQUAL = 'equal'
-      OPERATOR_NOT_EQUAL = 'not_equal'
-      OPERATOR_CONTAIN = 'contain'
-      OPERATOR_NOT_CONTAIN = 'not_contain'
-      OPERATOR_EMPTY = 'empty'
-      OPERATOR_NOT_EMPTY = 'not_empty'
-      OPERATOR_LESS_THAN = 'less_than'
-      OPERATOR_GREATER_THAN = 'greater_than'
+    # Filter operators
+    OPERATOR_EQUAL = 'equal'
+    OPERATOR_NOT_EQUAL = 'not_equal'
+    OPERATOR_CONTAIN = 'contain'
+    OPERATOR_NOT_CONTAIN = 'not_contain'
+    OPERATOR_EMPTY = 'empty'
+    OPERATOR_NOT_EMPTY = 'not_empty'
+    OPERATOR_LESS_THAN = 'less_than'
+    OPERATOR_GREATER_THAN = 'greater_than'
+
+    class_methods do
+      def filter_methods(*methods)
+        @filter_methods ||= []
+        @filter_methods += methods unless methods.nil?
+        @filter_methods
+      end
+    end
+
+    included do
+      def apply_all_filters(query)
+        filter_query = nil
+
+        [:apply_filterable, *self.class.filter_methods].each do |method|
+          filter_query = self.send(method, filter_query.nil? ? item_class.all : filter_query)
+        end
+
+        query.merge(filter_query)
+      end
 
       def apply_filterable(query)
         return query unless params[:filters].present?
@@ -158,6 +176,5 @@ module RailsResources
         subquery
       end
     end
-
   end
 end

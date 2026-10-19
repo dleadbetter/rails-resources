@@ -30,7 +30,7 @@ module RailsResources
 
       def resolve_search_query(attr)
         attribute = resolve_search_attribute(attr)
-        item_class.where("#{attribute} ILIKE ?", "%#{params[:search]}%")
+        item_class.where("#{attribute} ILIKE ?", "%#{params[:query]}%")
       end
 
       def resolve_search_attribute(attr)
@@ -45,7 +45,7 @@ module RailsResources
 
       def apply_searchable(query)
         # No need to apply a search if no parameter is applied
-        return query unless params[:search].present?
+        return query unless params[:query].present?
 
         # No need to apply a search if no attributes are provided
         return query if self.class.search_attributes.empty?

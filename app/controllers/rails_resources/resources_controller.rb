@@ -135,7 +135,7 @@ module RailsResources
       options = load_records(item)
       serializer = serializer_class.new(current_user, options)
 
-      { param_name.to_sym => serializer.render_show(item) }
+      { id: item.id, param_name.to_sym => serializer.render_show(item) }
     end
 
     def bypass_authorization
