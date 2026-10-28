@@ -143,9 +143,9 @@ module RailsResources
 
         case filter[:operator]
         when OPERATOR_EQUAL
-          query.where(attribute => value)
+          query.where("#{attribute} = ?", value)
         when OPERATOR_NOT_EQUAL
-          query.where.not(attribute => value)
+          query.where.not("#{attribute} = ?", value)
         when OPERATOR_CONTAIN
           query.where("#{attribute} ILIKE ?", "%#{value}%")
         when OPERATOR_NOT_CONTAIN
