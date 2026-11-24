@@ -122,7 +122,7 @@ module RailsResources
       serialized = serializer.render_index(items)
 
       {
-        param_name.pluralize.to_sym  => serialized,
+        data: serialized,
         list: {
           count: metadata[:count],
           page: metadata[:page],
@@ -135,7 +135,7 @@ module RailsResources
       options = load_records(item)
       serializer = serializer_class.new(current_user, options)
 
-      { id: item.id, param_name.to_sym => serializer.render_show(item) }
+      { data: serializer.render_show(item) }
     end
 
     def bypass_authorization
